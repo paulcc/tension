@@ -1,0 +1,12 @@
+<div class="search" style="width: auto; height: 24px; padding: 4px 0px 8px 10px; vertical-align: middle;">
+  <% form_for 'search', :url => {:protocol => 'http', :only_path => false, :controller => 'extensions', :action => 'search'} do |f| %>
+    <span style="width: 55%; padding-left: 10px; float: right;">
+      <%= f.label "search_Search", "<strong>Search</strong>" %>
+      <span class="searchfield">
+        <input type="text" id="search_Search" name="q" value="<%= params[:q] %>" style="width: 200px;" />
+      </span>
+      <%= f.submit "", :id => 'search_submit', :type => 'image', :src => "/images/rightarrow.png", :style => "width: 25px; height: 19px; vertical-align: middle;" %>
+    </span>
+  <% end %>
+</div>
+

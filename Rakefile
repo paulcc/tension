@@ -8,3 +8,16 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 require 'tasks/rails'
+
+
+## xapian stuff
+#
+
+desc "config the xapian search"
+task :mk_xapian do          
+  system 'rake xapian:rebuild_index  models="Extension"'
+  system 'rake xapian:update_index'
+  system 'rake xapian:query models="Extension" query="extension"'
+end
+
+

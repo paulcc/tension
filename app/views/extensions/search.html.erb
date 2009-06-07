@@ -1,0 +1,43 @@
+<% if @extensions %>
+
+  <h1>Search Products for &lsquo;<%= h(params[:q].strip) %>&rsquo;</h1>
+  
+  <% if @extensions.matches_estimated > 0 %>
+    <p><%= pluralize @extensions.matches_estimated, 'extension' %> found</p>
+  <% end %>
+  
+  <% if correction = @extensions.spelling_correction %>
+    <p>Did you mean <%= link_to correction, search_path(:q => correction) %>?</p>
+    <br/>
+  <% end %>
+
+  <% if @extensions.empty? %>
+    <p>Sorry, your search returned no results</p>
+  <% else %>
+    <%= will_paginate @extensions, :params => {:q => params[:q]} %>
+    <br/>
+
+    <div>
+      <ul class="search-listing">
+      <% for extension in @extensions %>
+        <li class="product preview" style="width: 40%">
+	  <%# cycle('normal', 'alternate') %>
+            <%= render :partial => 'short_details', :locals => {:extension => extension} %>
+        </li>
+      <% end %>
+      </ul>
+    </div>
+    <div style="clear:both;"/>
+    
+    <%= will_paginate @extensions %>
+  <% end %>
+  
+<% else %>
+
+  <%# shouldn't be needed, might be retained in case of xapian bugs %>
+
+  <h1>Search results</h1>
+
+  <p>Sorry, but we didn't find anything for your query</p>
+
+<% end %>

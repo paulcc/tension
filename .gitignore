@@ -6,3 +6,5 @@ tmp/**/*
 config/database.yml
 db/*.sqlite3
 db/*.sqlite3.db
+
+vendor/plugins/acts_as_xapian/xapiandbs/*

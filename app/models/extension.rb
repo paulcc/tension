@@ -18,5 +18,40 @@ class Extension < ActiveRecord::Base
   def github?
     scm_location =~ /github.com/    
   end
+ 
+  # for search support
+  #
+  acts_as_xapian :texts => [:name, :summary, :description, :extra_search_texts]
   
+  def extra_search_texts
+    ''
+  end
+
+  attr_accessor :search_percent
+  attr_accessor :search_weight
+
+  def self.search(query, options = {})
+    options = {:per_page => 10}.update(options)
+    options[:page] ||= 1
+    
+    total_matches = ActsAsXapian::Search.new([Extension], query, :limit => options[:per_page]).matches_estimated
+    total_pages = (total_matches / options[:per_page].to_f).ceil
+   
+    offset = options[:per_page] * (options[:page].to_i - 1)
+    # really need this second call? look at it sometime
+    xapian_search = ActsAsXapian::Search.new([Extension], query, :limit => options[:per_page], :offset => offset)
+
+    objects = xapian_search.results.map do |result|
+      object = result[:model]
+      object.search_percent = result[:percent]
+      object.search_weight = result[:weight]
+      object
+    end
+
+    returning XapianResultEnumerator.new(options[:page], options[:per_page], total_matches) do |pager|
+      pager.xapian_search = xapian_search
+      pager.replace objects
+    end
+  end
+
 end

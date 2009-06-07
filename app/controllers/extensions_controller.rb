@@ -66,6 +66,12 @@ class ExtensionsController < ApplicationController
     end
   end
 
+
+  def search
+    if params[:q]
+      @extensions = Extension.search(params[:q], :page => params[:page], :per_page => 10)
+    end
+  end
   
 
   private
